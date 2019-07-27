@@ -19,7 +19,11 @@ usage:
         player.resume();
      sotp:
         player.stop();
-       
+      
+    
+     //if your want to konw which version of APlayer is using,just use the getversion function, if you want to keep up with the APlayer     //updated version,just download the newest version of APlayerSDK,and copy the APlayer.dll & codecs to your project to replace the old.
+     
+     string version=player.getversion();
      ..........  
      
     of course,you can explorer your own wraper of APlayer.
