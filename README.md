@@ -6,6 +6,8 @@ usage:
   1.in your dotnet application,in the debug directory,APlayer.dll && codecs must be included in the root
   2.refrence the AplayerDotNet.dll into your project
   3.usage of APlayer:
+  
+  
      APlayer player=new APlayer();
      player.SetHwnd(controls.handle);
      
