@@ -1,0 +1,73 @@
+// APlayer3.idl : APlayer3 的 IDL 源
+//
+
+#include "olectl.h"
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(F19169FA-7EB8-45EB-8800-0D1F7C88F553),
+	dual,
+	nonextensible,
+	helpstring("IPlayer 接口"),
+	pointer_default(unique)
+]
+interface IPlayer : IDispatch
+{
+	[id(1), helpstring("方法Open")] HRESULT Open([in] BSTR strUrl);
+	[id(2), helpstring("方法Close")] HRESULT Close(void);
+	[id(3), helpstring("方法Play")] HRESULT Play(void);
+	[id(4), helpstring("方法Pause")] HRESULT Pause(void);
+	[id(5), helpstring("方法GetVersion")] HRESULT GetVersion([out,retval] BSTR* pstrVersion);
+	[id(6), helpstring("方法SetCustomLogo")] HRESULT SetCustomLogo([in] LONG nLogo);
+	[id(7), helpstring("方法GetState")] HRESULT GetState([out,retval] LONG* pnState);
+	[id(8), helpstring("方法GetDuration")] HRESULT GetDuration([out,retval] LONG* pnDuration);
+	[id(9), helpstring("方法GetPosition")] HRESULT GetPosition([out,retval] LONG* pnPosition);
+	[id(10), helpstring("方法SetPosition")] HRESULT SetPosition([in] LONG nPosition, [out,retval] LONG* pnResult);
+	[id(11), helpstring("方法GetVideoWidth")] HRESULT GetVideoWidth([out,retval] LONG* pnVideoWidth);
+	[id(12), helpstring("方法GetVideoHeight")] HRESULT GetVideoHeight([out,retval] LONG* pnVideoHeight);
+	[id(13), helpstring("方法GetVolume")] HRESULT GetVolume([out,retval] LONG* pnVolume);
+	[id(14), helpstring("方法SetVolume")] HRESULT SetVolume([in] LONG nVolume, [out,retval] LONG* pnResult); // 0-1000, >100 mean lound
+	[id(15), helpstring("方法IsSeeking")] HRESULT IsSeeking([out,retval] LONG* pnSeeking);
+	[id(16), helpstring("方法GetBufferProgress")] HRESULT GetBufferProgress([out,retval] LONG* pnBufferProgress);
+	[id(17), helpstring("方法GetConfig")] HRESULT GetConfig([in] LONG nConfigId, [out,retval] BSTR* pstrResult);
+	[id(18), helpstring("方法SetConfig")] HRESULT SetConfig([in] LONG nConfigId, [in] BSTR strValue, [out,retval] LONG* pnResult);
+};
+
+
+[
+	uuid(97830570-35FE-4195-83DE-30E79B718713),
+	version(1.0),
+	helpstring("APlayer3 1.0 类型库")
+]
+library APlayer3Lib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(31D6469C-1DA7-47C0-91F9-38F0C39F9B89),
+		helpstring("_IPlayer事件接口")
+	]
+	dispinterface _IPlayerEvents
+	{
+		properties:
+		methods:
+		[id(1), helpstring("方法OnMessage")] HRESULT OnMessage([in] LONG nMessage, [in] LONG wParam, [in] LONG lParam);
+		[id(2), helpstring("方法OnStateChanged")] HRESULT OnStateChanged([in] LONG nOldState, [in] LONG nNewState);
+		[id(3), helpstring("方法OnOpenSucceeded")] HRESULT OnOpenSucceeded(void);
+		[id(4), helpstring("方法OnSeekCompleted")] HRESULT OnSeekCompleted([in] LONG nPosition);
+		[id(5), helpstring("方法OnBuffer")] HRESULT OnBuffer([in] LONG nPercent);
+		[id(6), helpstring("方法OnVideoSizeChanged")] HRESULT OnVideoSizeChanged(void);
+		[id(7), helpstring("方法OnDownloadCodec")] HRESULT OnDownloadCodec([in] BSTR strCodecPath);
+		[id(8), helpstring("方法OnEvent")] HRESULT OnEvent([in] LONG nEventCode, [in] LONG nEventParam);
+	};
+	[
+		uuid(A9332148-C691-4B9D-91FC-B9C461DBE9DD),
+		helpstring("APlayer3 Control")
+	]
+	coclass Player
+	{
+		[default] interface IPlayer;
+		[default, source] dispinterface _IPlayerEvents;
+	};
+};

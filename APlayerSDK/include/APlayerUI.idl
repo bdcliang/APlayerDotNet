@@ -1,0 +1,84 @@
+// APlayerUI.idl : APlayerUI 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 产生类型库(APlayerUI.tlb)和封送处理代码。
+
+#include "olectl.h"
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(C46DFF24-22C0-4C8F-87D0-5CADE3C2ADD6),
+	dual,
+	nonextensible,
+	helpstring("IPlayer 接口"),
+	pointer_default(unique)
+]
+interface IPlayer : IDispatch{
+	[id(1), helpstring("方法GetAPlayerObject")]			HRESULT GetAPlayerObject([out,retval] IDispatch** ppAPlayer);
+	[id(2), helpstring("方法IsFullScreen")]				HRESULT IsFullScreen([out,retval] VARIANT_BOOL* pbResult);
+	[id(3), helpstring("方法SetFullScreen")]			HRESULT SetFullScreen([in] VARIANT_BOOL bFullScreen);
+	[id(4), helpstring("方法AddElement")]				HRESULT AddElement([in] LONG nType, [in] BSTR strURL, [out,retval] LONG* pnElementId);
+	[id(5), helpstring("方法RemoveElement")]			HRESULT RemoveElement([in] LONG nElementID, [out,retval] VARIANT_BOOL* pbResult);
+	[id(6), helpstring("方法SetElementVisible")]		HRESULT SetElementVisible([in] LONG nElementID, [in] VARIANT_BOOL bVisible);
+	[id(7), helpstring("方法SetElementPosition")]		HRESULT SetElementPosition([in] LONG nElementID, [in] LONG nPosMode, [in] LONG nLeft, [in] LONG nTop, [in] LONG nWidth, [in] LONG nHeight);
+	[id(8), helpstring("方法GetElementObject")]			HRESULT GetElementObject([in] LONG nElementID, [out,retval] IUnknown** ppObject);
+	[id(9), helpstring("方法EnableElement")]			HRESULT EnableElement([in] LONG nElementID, [in] VARIANT_BOOL bEnable);
+	[id(10), helpstring("方法IsElementEnabled")]		HRESULT IsElementEnabled([in] LONG nElementID, [out,retval] VARIANT_BOOL* pbEnable);
+	[id(11), helpstring("方法SetElementAlpha")]			HRESULT SetElementAlpha([in] LONG nElementID, [in] LONG nAlpha);
+	[id(12), helpstring("方法CallFlashFunction")]		HRESULT CallFlashFunction([in] LONG nElementID, [in] BSTR request, [out,retval] BSTR* response);
+	[id(13), helpstring("方法SetForegroundElement")]	HRESULT SetForegroundElement([in] LONG nElementID, [out,retval] VARIANT_BOOL* pbResult);
+	[id(14), helpstring("方法EnableAllElements")]		HRESULT EnableAllElements([in] VARIANT_BOOL bEnable);
+	[id(15), helpstring("方法IsElementVisible")]		HRESULT IsElementVisible([in] LONG nElementID, [out,retval] VARIANT_BOOL* pbVisible);
+	[id(16), helpstring("方法SetAllElementsVisible")]	HRESULT SetAllElementsVisible([in] VARIANT_BOOL bVisible);
+	[id(17), helpstring("方法GetElementsNumber")]		HRESULT GetElementsNumber([out,retval] LONG* pnElementsNum);
+	[id(18), helpstring("方法GetElementAlpha")]			HRESULT GetElementAlpha([in] LONG nElementID, [out,retval] LONG* pnAlpha);
+	[id(19), helpstring("方法ShowDefaultControlBar")]	HRESULT ShowDefaultControlBar([in] VARIANT_BOOL bShow, [in] LONG nControlBarHeight);
+	[id(20), helpstring("方法SetReturnValue")]			HRESULT SetReturnValue([in] LONG nElementID, [in] BSTR request);
+	[id(21), helpstring("方法GetVersion")]				HRESULT GetVersion([out,retval] BSTR* pstrVersion);
+};
+
+[
+	uuid(A9757030-96F6-485E-A8AB-5B5137462472),
+	version(1.0),
+	helpstring("APlayerUI 1.0 类型库")
+]
+library APlayerUILib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(A6FB024D-D311-40F7-B2D6-BB59B88A8F52),
+		helpstring("_IPlayer事件接口")
+	]
+	dispinterface _IPlayerEvents
+	{
+		properties:
+		methods:
+		[id(1), helpstring("方法OnMessage")]				HRESULT OnMessage([in] LONG nMessage, [in] LONG wParam, [in] LONG lParam);
+		[id(2), helpstring("方法OnStateChanged")]			HRESULT OnStateChanged([in] LONG nOldState, [in] LONG nNewState);
+		[id(3), helpstring("方法OnOpenSucceeded")]			HRESULT OnOpenSucceeded(void);
+		[id(4), helpstring("方法OnSeekCompleted")]			HRESULT OnSeekCompleted([in] LONG nPosition);
+		[id(5), helpstring("方法OnBuffer")]					HRESULT OnBuffer([in] LONG nPercent);
+		[id(6), helpstring("方法OnVideoSizeChanged")]		HRESULT OnVideoSizeChanged(void);
+		[id(7), helpstring("方法OnDownloadCodec")]			HRESULT OnDownloadCodec([in] BSTR strCodecPath);
+		
+		[id(8), helpstring("方法OnFlashReadyStateChange")]	HRESULT OnFlashReadyStateChange([in] LONG nElementID, [in] LONG nNewState);
+		[id(9), helpstring("方法OnFlashProgress")]			HRESULT OnFlashProgress([in] LONG nElementID, [in] LONG nPercentDone);
+		[id(10), helpstring("方法OnFlashCommand")]			HRESULT OnFlashCommand([in] LONG nElementID, [in] BSTR command, [in] BSTR args);
+		[id(11), helpstring("方法OnFlashCall")]				HRESULT OnFlashCall([in] LONG nElementID, [in] BSTR args);
+
+		[id(12), helpstring("方法OnDocumentComplete")]		HRESULT OnDocumentComplete([in] LONG nElementID, [in] BSTR URL);
+		[id(13), helpstring("方法OnPictureLBtnDown")]		HRESULT OnPictureLBtnDown([in] LONG nElementID);
+	};
+	[
+		uuid(23A860E9-0C41-4E01-9206-D3FC0E413645),
+		helpstring("Player Class")
+	]
+	coclass Player
+	{
+		[default] interface IPlayer;
+		[default, source] dispinterface _IPlayerEvents;
+	};
+};

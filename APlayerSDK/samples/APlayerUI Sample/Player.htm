@@ -1,0 +1,354 @@
+<HTML>
+	<HEAD>
+		<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=gb2312">
+		<TITLE>APlayerUI 演示页</TITLE>
+	</HEAD>
+	
+	<h1>APlayerUI 演示页</h1>
+	<h3>该页和所有flash文件必须放在 Http Server（例如：HFS）上，在本地打开会被IE拦截通信。</h3>
+	<h3>如果该页显示不正常，说明未安装 APlayerSDK</h3>
+	<BODY>		
+		<input id="mybtn1" type="button" value="添加暂停广告" onclick="addelements()" />
+		<input id="mybtn4" type="button" value="删除暂停广告" onclick="removeelements()" />
+		<input id="mybtn5" type="button" value="激活广告交互" onclick="EnableElements()" />
+		<input id="mybtn13" type="button" value="获取广告个数" onclick="GetElementsNumber()" />
+		<input id="mybtn14" type="button" value="设置广告整体透明度" onclick="SetElementAlpha()" />
+		<input id="mybtn15" type="button" value="显示默认控制条" onclick="ShowDefaultControlBar()" />
+		<br></br>
+		<object 
+			id="Player"
+			width="800"
+			height="450" 
+			classid="CLSID:23A860E9-0C41-4E01-9206-D3FC0E413645"
+			style="left:20; top:90;" VIEWASTEXT>
+			<embed
+				id="Player_FF"
+				name="Player"
+				type="application/x-thunder-aplayer"
+				width="800"
+				height="450"
+				clsid="{23A860E9-0C41-4E01-9206-D3FC0E413645}"
+				Event_OnStateChanged="OnStateChanged"
+				Event_OnFlashCall="OnFlashCall"
+				Event_OnFlashReadyStateChange="OnFlashReadyStateChange"
+				Event_OnDocumentComplete="OnDocumentComplete"
+				Event_OnPictureLBtnDown="OnPictureLBtnDown"
+				Event_OnOpenSucceeded="OnOpenSucceeded">
+			</embed>
+		</object>
+		
+		<script type="text/javascript">
+			var EventUtil = 
+			{
+				addHandler: function(element, type, handler)
+				{
+					if (element.addEventListener) {
+						element.addEventListener(type, handler, false);
+					}
+					else {
+						element.attachEvent("on" + type, handler);
+					}
+				},
+				
+				removeHandler: function(element, type, handler)
+				{
+					if (element.removeEventListener) {
+						element.removeEventListener(type, handler, false);
+					}
+					else {
+						element.detachEvent("on" + type, handler);
+					}
+				}
+			};
+		</script>
+		
+		<script type="text/javascript">
+			var player = null;
+			var Aplayer = null;
+			
+			var ID1 = null;
+			var flash1 = null;
+			
+			var ID2 = null;
+			var flash2 = null;
+			
+			var bShow = true;
+			var bEnable = false;
+			
+			var position = null;
+			var duration = null;
+			
+			var unloadhandler = function()
+			{
+				if (ID1 != null) {
+					player.RemoveElement(ID1);
+					ID1 = null;
+					flash1 = null;
+				}
+				
+				if (ID2 != null) {
+					player.RemoveElement(ID2);
+					ID2 = null;
+					flash2 = null;
+				}
+				
+			};
+			
+			var loadhandler = function()
+			{
+				player = GetElementById("Player");
+				Aplayer = player.GetAPlayerObject();
+				if(player == null || Aplayer == null)
+					return;
+				
+				player.ShowDefaultControlBar(false, 40);
+				ID1 = player.AddElement(3, "http://hhh.xunlei.com/ctrl.swf");
+				player.SetElementPosition(ID1, 7, 0, 0, 100, 100);
+				player.SetElementVisible(ID1, true);
+				flash1 = player.GetElementObject(ID1);
+			};
+			
+			function OnFlashCall(nID, args)
+			{
+				if (nID == ID1) {
+					if (Aplayer.GetState() != 5) {
+						Aplayer.Open("http://f1.flv.kankan.xunlei.com/data/cdn_transfer/demo.hflv");
+					}
+					else {
+						Aplayer.Close();
+					}
+				}
+			}
+			
+			function MillisecondToText(ms) {
+				var s = ms / 1000;
+				ms = ms % 1000;
+				var h = s / 3600;
+				s = s % 3600;
+				var m = s / 60;
+				s = s % 60;
+
+				h = Math.floor(h);
+				m = Math.floor(m);
+				s = Math.floor(s);
+
+				var text = "";
+				if (h > 0 && h < 10)
+					text = "0" + h + ":";
+
+				if (m >= 0 && m < 10)
+					text = text + "0" + m + ":";
+				else
+					text = text + m + ":";
+
+				if (s >= 0 && s < 10)
+					text = text + "0" + s;
+				else
+					text = text + s;
+				return text;
+			}		
+			
+			function UpdateTime()
+			{
+				var text = null;
+				if (Aplayer != null)
+			    {
+					if (Aplayer.GetState() == 5)
+					{
+						position = Aplayer.GetPosition();
+						position = MillisecondToText(position);
+						var p = Aplayer.GetBufferProgress();
+		 
+						if (p == -1)
+							text = position + " / " + duration;
+						else
+							text = position + " / " + duration + " (正在缓冲..." + p + "%)";
+							
+						var para = "<invoke name=\"callflash\" returntype=\"xml\"><arguments><string>";
+						para = para + text;
+						para = para + "</string></arguments></invoke>";
+						player.CallFlashFunction(ID1, para);
+					}
+					else
+					{
+					   var nResult = Aplayer.GetConfig(7);
+					   if(nResult != 0 && nResult != 1)
+							text= "播放失败, 错误码 = " + nResult;
+					   else
+							text = "";
+						
+					}		
+				}
+				setTimeout(function () { UpdateTime(); }, 1000);
+			}
+
+			UpdateTime();
+			
+			function OnOpenSucceeded() {
+				var nDuration = Aplayer.GetDuration();
+				duration = MillisecondToText(nDuration);
+			}
+			
+			function OnDocumentComplete(nID, URL)
+			{
+				//alert("ID="+nID+", 网页 "+URL+" 加载完成！");
+			}
+			
+			/*function thisMovie(movieName)
+			{
+				if (navigator.appName.indexOf("Microsoft") != -1) {
+					return window[movieName];
+				}
+				else {
+					return document[movieName];
+				}
+			}*/
+			
+			function GetElementById(Id)
+			{
+				if (navigator.appName.indexOf("Microsoft") != -1) {
+					return document.getElementById(Id);
+				}
+				else {
+					return document.getElementById(Id+"_FF");　　
+				}
+			}
+			
+			function GetElementsNumber()
+			{
+				var n = player.GetElementsNumber();
+				alert("已添加元素数量 = " + n);
+			}
+			
+			function SetElementAlpha()
+			{				
+				var alpha = player.GetElementAlpha(ID2);
+				if (alpha > 0)
+				{
+					var newalpha = alpha - 25.5;
+					//alert("目前 alhpa=" + alpha + ",　将设置成 " + newalpha);
+					player.SetElementAlpha(ID2, newalpha);
+				}
+				else
+				{
+					//alert("目前 alhpa=" + alpha + ",　将设置成255");
+					player.SetElementAlpha(ID2, 255);
+				}
+			}
+			
+			function ShowDefaultControlBar()
+			{
+				player.ShowDefaultControlBar(bShow, 40);
+				if (bShow == false) {
+					player.SetElementVisible(ID1, true);
+				}
+				else if (ID1 != null) {
+					player.SetElementVisible(ID1, false);
+				}
+				
+				bShow = !bShow;
+			}
+			
+			function SetForeground()
+			{
+				if (ID2 != null) {
+					var result = player.SetForegroundElement(ID2);
+				}
+			}
+			
+			/*function eventListener()
+			{
+				alert('receive_player: '+document.domain);
+			}*/
+			
+			EventUtil.addHandler(window, "load", loadhandler);
+			EventUtil.addHandler(window, "unload", unloadhandler);
+			
+			function addelements()
+			{
+				removeelements();
+				
+				ID2 = player.AddElement(3, "http://hhh.xunlei.com/ad.swf");
+				player.SetElementPosition(ID2, 6, 25, 25, 50, 50);
+				player.SetElementVisible(ID2, true);
+				flash1 = player.GetElementObject(ID2);				
+			}
+			
+			function removeelements()
+			{
+				if (ID2 != null) {
+					player.RemoveElement(ID2);
+					ID2 = null;
+					flash2 = null;
+				}
+			}
+			
+			function showflash()
+			{
+				player.SetElementVisible(ID2, true);
+			}
+			
+			function hideflash()
+			{
+				player.SetElementVisible(ID2, false);
+			}
+			
+			function EnableElements()
+			{
+				player.EnableAllElements(bEnable);
+				bEnable = !bEnable;
+			}
+			
+			function OnStateChanged(oldState, newState)
+			{
+				switch (newState)
+				{
+					case 0:	// PS_READY
+					case 3:	// PS_PAUSED
+						showflash();
+						break;
+					
+					case 5:	// PS_PLAY
+						hideflash();
+						break;				
+				}
+			}
+			
+			function OnPictureLBtnDown(nID)
+			{
+				//alert("ID=" + nID + ", 没有美女看，不用点啦！");
+				//player.SetElementVisible(ID3, false);
+			}
+			
+			function OnFlashReadyStateChange(nID, newState)
+			{
+				//alert("event=OnReadyStateChange, flashID=" + nID + ", state=" + newState);
+			}
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnPictureLBtnDown(nID)">
+			OnPictureLBtnDown(nID);
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnStateChanged(oldState, newState)">
+			OnStateChanged(oldState, newState);
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnFlashReadyStateChange(nID, newState)">
+			OnFlashReadyStateChange(nID, newState);
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnFlashCall(nID, args)">
+			OnFlashCall(nID, args);
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnDocumentComplete(nID, URL)">
+			OnDocumentComplete(nID, URL);
+		</script>
+		
+		<script type="text/javascript" for="Player" event="OnOpenSucceeded()">
+			OnOpenSucceeded();
+		</script>
+		
+	</BODY>
+</HTML>
