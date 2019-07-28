@@ -1,5 +1,5 @@
 # APlayerDotNet
-dotnet version: 4.7.2
+dotnet version: 4.7.2\n
 this is a dotnet wraper of APlayer,using CLR C++ to wrap unmanaged APlayer C++ libray,which wraps the common used natived functions of Aplayer,
 and also include some simplify dotnet managed function,for user easy using.
 
