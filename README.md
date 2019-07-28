@@ -1,10 +1,11 @@
 # APlayerDotNet
+dotnet version: 4.7.2
 this is a dotnet wraper of APlayer,using CLR C++ to wrap unmanaged APlayer C++ libray,which wraps the common used natived functions of Aplayer,
 and also include some simplify dotnet managed function,for user easy using.
 
 usage:
-  1.in your dotnet application,in the debug directory,APlayer.dll && codecs must be included in the root
-  2.refrence the AplayerDotNet.dll into your project
+  1.in your dotnet application,in the debug directory,APlayer.dll && codecs must be included in the root.
+  2.refrence the AplayerDotNet.dll into your project.
   3.usage of APlayer:
   
   
