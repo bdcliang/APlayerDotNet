@@ -9,6 +9,7 @@ namespace APlayerDotNet
 	}
 	APlayer::~APlayer()
 	{
+		gchandle.Free();
 		if (player)
 		{
 			player->Release();
@@ -21,10 +22,10 @@ namespace APlayerDotNet
 		g_hwnd = hwnd;
 		player->SetHwnd(static_cast<HWND>(g_hwnd.ToPointer()));
 		MediaHandler^ mdelegate = gcnew MediaHandler(this,&APlayer::eventHandler);
-		GCHandle gchandle = GCHandle::Alloc(mdelegate);
+		gchandle = GCHandle::Alloc(mdelegate);
 		IntPtr pFunc = Marshal::GetFunctionPointerForDelegate(mdelegate);
 		player->SetEventHandler(static_cast<p_Handler>(pFunc.ToPointer()));
-		gchandle.Free();
+		
 		return true;
 	}
 	void APlayer::Play(String^ path)
@@ -63,6 +64,10 @@ namespace APlayerDotNet
 	void APlayer::SetAspectRatio(int w, int h)
 	{
 		player->SetAspectRatio(w, h);
+	}
+	int APlayer::GetConfig(int nConfigId)
+	{
+		return player->GetConfig(nConfigId);
 	}
 	void APlayer::SetConfig(int nConfigId, String^ strVal)
 	{
@@ -108,7 +113,6 @@ namespace APlayerDotNet
 		TCHAR* pstr = player->GetVersion();
 		IntPtr pstrPtr = static_cast<IntPtr>(pstr);
 		String^ version=Marshal::PtrToStringUni(pstrPtr);
-		//delete[] pstr;
 		return version;
 	}
 	void APlayer::SetStrechFill(bool enable)

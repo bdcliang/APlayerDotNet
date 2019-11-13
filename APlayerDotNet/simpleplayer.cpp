@@ -20,7 +20,7 @@ HRESULT CMyPlayer::OnMessage(LONG nMessage, LONG wParam, LONG lParam)
 	return S_OK;
 }
 //
-int CMyPlayer::GetConfigInt(int nConfigId)
+int CMyPlayer::GetConfig(int nConfigId)
 {
 	USES_CONVERSION;
 	_bstr_t strConfig = m_pAPlayer->GetConfig(nConfigId);

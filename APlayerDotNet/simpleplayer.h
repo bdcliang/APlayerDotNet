@@ -35,7 +35,7 @@ public:
 	CMyPlayer(const CMyPlayer&) {}
 	void SetHwnd(HWND hwnd);	
 public:
-	int				GetConfigInt(int nConfigId);
+	int				GetConfig(int nConfigId);
 	void			SetConfig(long nConfigId,TCHAR* strValue);
 	void			Initialize();
 	void			Release();

@@ -28,6 +28,12 @@ namespace WindowsFormsApp1
             
             player.MediaPlaying += Player_MediaPlaying;
             player.MediaReady += Player_MediaReady;
+            player.MediaClosing += Player_MediaClosing;
+        }
+
+        private void Player_MediaClosing()
+        {
+            Console.WriteLine("=========video closing===========");
         }
 
         private void Player_MediaReady()
@@ -67,6 +73,12 @@ namespace WindowsFormsApp1
         private void button2_Click(object sender, EventArgs e)
         {
             player.SetAspectRatio(pictureBox1.Width, pictureBox1.Height);
+        }
+
+        private void pictureBox1_SizeChanged(object sender, EventArgs e)
+        {
+            if(player!=null)
+                player.SetAspectRatio(pictureBox1.Width, pictureBox1.Height);
         }
     }
 }

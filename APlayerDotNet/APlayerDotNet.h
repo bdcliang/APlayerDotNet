@@ -30,13 +30,33 @@ namespace APlayerDotNet {
 		/// 设置视频播放窗口
 		/// </summary>
 		bool SetHwnd(IntPtr hwnd);
-		//
+		///
+		///play the specified video path to play
+		///
 		void Play(String^ path);
+		///
+		///pause the video
+		///
 		void Pause();
+		///
+		///resume the paused video
+		///
 		void Resume();
+		///
+		///stop the video
+		///
 		void Stop();
+		///
+		///set the volume mute
+		///
 		void Mute();
+		///
+		///recovery the volume to normal
+		///
 		void UnMute();
+		///
+		///set the default the screen logo of the player
+		///
 		void SetCustomLogo(System::Drawing::Bitmap^ logo);
 		/*
 		@prief  需要在视频播放的时候进行设置
@@ -44,7 +64,14 @@ namespace APlayerDotNet {
 		@[in] h 视频的高度
 		*/
 		void SetAspectRatio(int w,int h);
+		///
+		///setconfig function
+		///
 		void SetConfig(int nConfigId,String^ strVal);
+		///
+		///get config function
+		///
+		int GetConfig(int nConfigId);
 
 		long GetState();
 		long GetDuration();
@@ -56,7 +83,13 @@ namespace APlayerDotNet {
 		void SetVolume(long num);
 		bool IsSeeking();
 		long GetBufferProgress();
+		///
+		///get the current version of the Aplayer
+		///
 		String^ GetVersion();
+		///
+		///set the video strech to fill the parent control or not
+		///
 		void SetStrechFill(bool enable);
 
 		event MediaEventHandler^ MediaReady;
@@ -69,6 +102,7 @@ namespace APlayerDotNet {
 	private:
 		CMyPlayer* player;
 		IntPtr g_hwnd;
+		GCHandle gchandle;
 		void eventHandler(PLAY_STATE);
 	};
 }
