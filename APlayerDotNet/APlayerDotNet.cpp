@@ -21,10 +21,9 @@ namespace APlayerDotNet
 		g_hwnd = hwnd;
 		player->SetHwnd(static_cast<HWND>(g_hwnd.ToPointer()));
 		MediaHandler^ mdelegate = gcnew MediaHandler(this,&APlayer::eventHandler);
-		GCHandle gchandle = GCHandle::Alloc(mdelegate);
+		gchandle = GCHandle::Alloc(mdelegate);
 		IntPtr pFunc = Marshal::GetFunctionPointerForDelegate(mdelegate);
 		player->SetEventHandler(static_cast<p_Handler>(pFunc.ToPointer()));
-		gchandle.Free();
 		return true;
 	}
 	void APlayer::Play(String^ path)
