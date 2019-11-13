@@ -9,6 +9,7 @@ namespace APlayerDotNet
 	}
 	APlayer::~APlayer()
 	{
+                gchandle.Free();
 		if (player)
 		{
 			player->Release();
