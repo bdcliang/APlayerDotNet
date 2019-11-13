@@ -69,6 +69,7 @@ namespace APlayerDotNet {
 	private:
 		CMyPlayer* player;
 		IntPtr g_hwnd;
+		GCHandle gchandle;
 		void eventHandler(PLAY_STATE);
 	};
 }
